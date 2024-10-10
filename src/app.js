@@ -2,6 +2,81 @@ const express = require('express');
 
 const app = express();
 
+// ------------------------------------------------------
+    //  ************ AUTHENTICATION IN MIDDLEWARE ***********
+
+    // app.use( "/admin" , (req, res, next) => 
+    // {
+    //     console.log("authenticating admin");
+        
+    //     const token = "xyz";
+
+    //     const isAutherised = token === "xyz" ? true : false;
+
+    //     if(!isAutherised)
+    //     {
+    //         res.status(401).send("you are not autherised");
+    //     }
+    //     else{
+    //         next();
+    //     }
+
+    // })
+
+    const {adminAuth, userAuth} = require("../middleware/auth.js");
+
+    //CALL AUTH FOR EVERY "/admin" CALL
+    app.use("/admin", adminAuth);
+
+    app.get( "/admin/getUser" , (req, res ) => {
+
+        console.log("admin get user");
+        
+        res.send( "send all user data");
+    });
+
+    app.get( "/admin/deleteUser" , (req, res ) => {
+        console.log("admin delete user");
+        res.send( "delete  user data");
+    })
+
+
+  //AUTH THE USER THEN CALL ROUTE HANDLER
+    app.get("/user/getData" , userAuth , (req, res) => {
+
+        console.log("sending the user data");
+
+        res.send( "send user data successfully");
+        
+    })
+
+  //AUTH THE USER THEN CALL ROUTE HANDLER
+    app.get( "/user/info", userAuth, (req, res) => {
+        console.log("sending the user info");
+
+        res.send( "send user info successfully ")
+    })
+
+//WITHOUT AUTH CALL ROUTE HANDLER 
+    app.post( "/user/login" , (req, res) => {
+
+        console.log("logging the user");
+        res.send("user logged successfully");
+        
+    })
+
+
+
+    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11,6 +86,7 @@ const app = express();
 
     app.get( "/person" , (req, res, next) => {
        
+      //act as middleware
         console.log("handeling 1 route handler");
         next(); // will move to send route handler
         
@@ -18,16 +94,16 @@ const app = express();
         //once res is send tcp connection is lost
     }, 
     (req, res, next) => {
-       
+          //act as middleware
         console.log("handeling the 2 route handler");
 
-        // res.send( "calling response 2")
+        res.send( "calling response 2")
 
         next(); // move to next route handler
         
     },
     (req, res, next) => {
-       
+          //act as route handler
         console.log("handeling the 3 route handler");
 
         res.send( "calling response 3")
@@ -54,13 +130,13 @@ const app = express();
 
 // to get the query param from "/user?userId=101"
 // to get the query param from "/user?userId=101&password=1234"
-app.get( "/user", (req, res) => {
+// app.get( "/user", (req, res) => {
 
-       //will give the "query" from url (userid and pass)
-       console.log(req.query);
+//        //will give the "query" from url (userid and pass) to auth
+//        console.log(req.query);
        
-    res.send({firstname:"amit", lastname:"kumar"});
-});
+//     res.send({firstname:"amit", lastname:"kumar"});
+// });
 
 
 // ----------------------------------------------------------
@@ -114,23 +190,26 @@ app.use( "/hello" , (req, res) => {
 
 
 //CALLING POST API METHOD ON "/user"
-app.post( "/user", (req, res) => {
-    //saving data to db.....and sending response
-    res.send("data successfully saved on db");
+// app.post( "/user", (req, res) => {
+//     //saving data to db.....and sending response
+//     res.send("data successfully saved on db");
      
-})
+// })
 
 
-app.use( "/login", (req, res) => {
-    res.send( "login path")
-}) 
+// app.use( "/login", (req, res) => {
+//     res.send( "login path")
+// }) 
 
-app.use( "/logout", (req, res) => {
-    res.send( "logout path")
-}) 
+// app.use( "/logout", (req, res) => {
+//     res.send( "logout path")
+// }) 
 
 
 
-app.listen(4000, () => {
-    console.log("listening on 4000!!")
+// --------------------------------------------------
+
+
+app.listen(3000, () => {
+    console.log("listening on 3000!!")
 });
