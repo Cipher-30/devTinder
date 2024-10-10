@@ -7,10 +7,23 @@ const app = express();
 //     res.send("this is respose for server on 3000")
 // });
 
-
+//".use MATCHES ALL THE HTTP METHOD API CALL TO /hello"
 app.use( "/hello" , (req, res) => {
     res.send("this response is for /hello path ")
 });
+
+
+app.get( "/user", (req, res) => {
+    res.send({firstname:"amit", lastname:"kumar"});
+});
+
+
+//CALLING POST API METHOD ON "/user"
+app.post( "/user", (req, res) => {
+    //saving data to db.....and sending response
+    res.send("data successfully saved on db");
+     
+})
 
 
 app.use( "/login", (req, res) => {
@@ -23,6 +36,6 @@ app.use( "/logout", (req, res) => {
 
 
 
-app.listen(3000, () => {
-    console.log("listening on 3000!!")
+app.listen(4000, () => {
+    console.log("listening on 4000!!")
 });
