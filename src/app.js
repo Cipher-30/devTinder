@@ -2,6 +2,54 @@ const express = require('express');
 
 const app = express();
 
+
+// ------------------------------------------------------
+    //  ************ HANDELING ERROR ***********
+
+
+    app.get( "/getUserData" , (req, res) => {
+
+        //THIS IS THE BEST WAY TO HANDLE ERROR 
+        //BY USING TRY AND CATCH 
+        try{
+            
+            throw new Error("jfskfj");
+            res.send("user data send")
+        }
+        catch(err)
+        {
+           res.status(500).send("something went wrong");
+        }
+    })
+
+
+ // THIS CODE SHOULD BE PLACED AT END OF THE CODE
+ // IF NOTHING RETURN THIS WILL RETURN IF SOMEONE THROW AN ERROR
+
+
+    app.use( "/", (err,req, res, next) => {
+        if(err)
+        {
+            res.status(500).send("something went wrong");
+        }
+    })
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ------------------------------------------------------
     //  ************ AUTHENTICATION IN MIDDLEWARE ***********
 
