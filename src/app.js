@@ -25,8 +25,6 @@ const app = express();
 
  // THIS CODE SHOULD BE PLACED AT END OF THE CODE
  // IF NOTHING RETURN THIS WILL RETURN IF SOMEONE THROW AN ERROR
-
-
     app.use( "/", (err,req, res, next) => {
         if(err)
         {
