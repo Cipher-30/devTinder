@@ -7,9 +7,41 @@ const User = require("../src/modals/user")
 
 const app = express();
 
+//MIDDLEWARE CONVERTING JSON DATA TO JS-OBJ 
+// ADDS JS-OBJ TO REQ.BODY
+app.use(express.json());
 
 
+
+//adding user dynamically using postman body (raw)
+ 
+app.post("/signUp", async (req, res) => {
+
+  const user = new User(req.body);
+try{
+  await user.save();
+  res.send("added user successfully");
+}
+catch(err)
+{
+  res.status(500).send("something went wrong!! ")
+}
+}); 
+
+
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------
  // ******** POST CALL TO SEND DATA TO DB ********
+ //HARDCODING THE USER-OBJ
 
  app.post("/signup" , async (req, res) => {
 
