@@ -2,10 +2,72 @@ const express = require("express");
 
 const connectDb = require("../config/database")
 
+const User = require("../src/modals/user")
+
 
 const app = express();
 
 
+
+ // ******** POST CALL TO SEND DATA TO DB ********
+
+ app.post("/signup" , async (req, res) => {
+
+  //CREATING OBJ TO SAVE INTO USER INSTANCE/MODAL
+  const userObj = {
+    firstName: "virat",
+    lastName : "kholi", 
+    emailId: "vk@gmail.com",
+    password:"test@123",
+    gender: "male"
+
+  };
+
+  //creating instance of User model/object
+  const user = new User(userObj);
+
+
+  //--------SAVES THE USER TO DB---------------
+ try{
+      await user.save(); // returns promise
+      res.send("successfully created user!!!")
+    }
+    catch(err)
+    {
+      res.status(500).send("Error saving the user" + err.message)
+    }
+// ---------------------------------------------------------
+
+//FAST/EASY TO CREATE OBJ TO SAVE INTO USER INSTANCE/MODAL
+//  (DIRECTLY)
+
+  //  const user = new User({
+  //   firstName: "amit",
+  //   lastName : "kumar", 
+  //   emailId: "ak@gmail.com",
+  //   password:"test@123",
+  //   gender: "male"
+  //  });
+  
+  //--------SAVES THE USER TO DB---------------
+
+    // try{
+    //   await user.save(); // returns promise
+    //   res.send("successfully created user!!!")
+    // }
+    // catch(err)
+    // {
+    //   res.status(500).send("Error saving the user")
+    // }
+
+  //-----------------------------------------------------
+ });
+
+
+
+
+
+ // ******** CONNECTING TO DB AND THEN LISTENING ON PORT 4000 ********
 
  connectDb()
  .then(() => {
@@ -20,7 +82,8 @@ const app = express();
  .catch( () => {
     console.error("cannot connect to database");
     
- })
+ });
+
 
 
 // app.get("/user" , (req, res) =>
