@@ -14,6 +14,55 @@ app.use(express.json());
 
 
 
+// -------------------------------------------------------------------
+// ******** UPDATE THE USER FROM ID ********
+// ******** with restricted permission ********
+
+
+app.patch("/updateUser/:userId" , async (req, res) => {
+  const userId = req.params?.userId; 
+  const data = req.body; 
+  // console.log( userId);
+  // console.log(data);
+  
+   
+  try{ 
+    const ALLOWED_UPDATES = ["lastName","gender","about","skill" ];
+
+    const isUpdateAllowed = Object.keys(data).every( (k) => { 
+      return  ALLOWED_UPDATES.includes(k)
+    });
+
+    console.log("isupdate " + isUpdateAllowed);
+    
+    if(!isUpdateAllowed )
+    { 
+     throw new Error("UPDATE  NOT ALLOWED");
+    }else
+    {
+      await User.findByIdAndUpdate({_id: userId}, data);   
+      res.send("updated user Successfully ");
+    }
+
+
+
+  }catch(err) 
+  {
+    res.status(404).send("something went wrong (update the user)"+ err.message);
+  } 
+
+}) 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21,26 +70,26 @@ app.use(express.json());
 // ******** UPDATE THE USER FROM ID ********
 
 
-app.patch("/update" , async (req, res) => 
-{
-  //getting data from api
-  const userId = req.body.id;
-  const data = req.body;
-  console.log(data);
+// app.patch("/update" , async (req, res) => 
+// {
+//   //getting data from api
+//   const userId = req.body.id;
+//   const data = req.body;
+//   console.log(data);
   
-  try{
-     //sending data to DB
-     await User.findByIdAndUpdate({_id : userId}, data )
+//   try{
+//      //sending data to DB              {}     ,    {}   
+//      await User.findByIdAndUpdate({_id : userId}, data )
 
-     res.send("successfully updates the user");
-  }
-  catch(err)
-  {
-    res.status(404).send("something went wrong (update the user)");
-  }
+//      res.send("successfully updates the user");
+//   }
+//   catch(err)
+//   {
+//     res.status(404).send("something went wrong (update the user)");
+//   }
    
 
-})
+// })
 
 
 
@@ -125,13 +174,15 @@ app.get("/allUser", async (req, res) =>
 app.post("/signUp", async (req, res) => {
    
   const user = new User(req.body);//getting data from api
+  console.log(user);
+  
 try{ 
   await user.save(); //saving data to DB
   res.send("added user successfully");
 }
 catch(err)
 {
-  res.status(500).send("something went wrong!! ")
+  res.status(500).send("something went wrong!!"+ err.message)
 }
 }); 
 
