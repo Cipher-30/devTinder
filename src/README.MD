@@ -5,6 +5,8 @@
    * npm i mongooes
    * npm i validator (for validating field in documents)
    * npm i bcrpt (for hashing the password)
+   * npm i cookie-parser (for cookie parsing)
+   * npm i jsonwebtoken (for creating jwt token(encrypted))
 
 
 

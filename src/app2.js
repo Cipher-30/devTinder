@@ -8,6 +8,8 @@ const User = require("../src/modals/user")
 const {validateSignUpData} = require("./utils/validate")
 
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 
 const app = express();
@@ -15,9 +17,41 @@ const app = express();
 //MIDDLEWARE CONVERTING JSON DATA TO JS-OBJ 
 // ADDS JS-OBJ TO REQ.BODY
 app.use(express.json());
+app.use(cookieParser());
 
 
-// -------------------------------------------------------------------
+
+
+app.get("/profile", async (req,res) => 
+{
+  //getting the cookie from the req send
+  const cookie = req.cookies;
+  const {token} = cookie; //extract token
+
+  //verify token with secret key ans get id from it
+  const decodeData = jwt.verify(token,"DEV@TINDER$731")
+  const {_id} = decodeData;// ectract id
+   
+ //find user from id
+  const user = await User.findById({_id});
+
+
+  if(!user)
+  {
+    throw new Error("user not found")
+  }
+  else{
+    console.log("user deatails",user);
+     //giving profile
+    res.send("here is your profile !!");
+  }
+  
+ 
+  
+})
+
+
+// ---------------------------------------------------------------
 // ******** LOG IN USER ********
 // ******** with HASED PASSWORD********
 
@@ -35,11 +69,19 @@ app.get( "/login", async (req, res) => {
       {
         throw new Error("User not present");
       }
-             //pass is valid or not
+             //pass is valid or not (comparing..)
       const validPassword = await bcrypt.compare(password, user.password);
       
       if(validPassword)
       {
+        //create jwt cookie by encrypting id into token with 
+        //secret key "DEV@TINDER$731"
+          const token = await jwt.sign({_id:user._id},"DEV@TINDER$731")
+          console.log(token);
+           
+          res.cookie("token", token);
+
+
         res.send("login successfully");
       }
       else{
