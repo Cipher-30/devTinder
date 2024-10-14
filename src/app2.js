@@ -5,12 +5,65 @@ const connectDb = require("../config/database")
 //importing modal = User
 const User = require("../src/modals/user")
 
+const {validateSignUpData} = require("./utils/validate")
+
+const bcrypt = require("bcrypt");
+
 
 const app = express();
 
 //MIDDLEWARE CONVERTING JSON DATA TO JS-OBJ 
 // ADDS JS-OBJ TO REQ.BODY
 app.use(express.json());
+
+
+// -------------------------------------------------------------------
+// ******** LOG IN USER ********
+// ******** with HASED PASSWORD********
+
+
+
+app.get( "/login", async (req, res) => {
+
+  //gets the email and pass from postman  
+   const {emailId, password} = req.body;
+
+   try{
+        //find user exist or not
+      const user = await User.findOne({emailId : emailId});
+      if(!user)
+      {
+        throw new Error("User not present");
+      }
+             //pass is valid or not
+      const validPassword = await bcrypt.compare(password, user.password);
+      
+      if(validPassword)
+      {
+        res.send("login successfully");
+      }
+      else{
+        throw new Error("not a valid password enter");
+      }
+
+   }catch(err)
+   {
+      throw new Error("password not valid" + err.message);
+   }
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -173,10 +226,25 @@ app.get("/allUser", async (req, res) =>
  
 app.post("/signUp", async (req, res) => {
    
-  const user = new User(req.body);//getting data from api
-  console.log(user);
+ 
   
 try{ 
+  //VALIDATING AT BACKED-END BEFORE SIGN-UP USER
+  validateSignUpData(req);
+
+  
+  const {firstName, lastName, emailId, password, age} = req.body;
+  const passwordHash = await bcrypt.hash(password,10);
+
+  const user = new User({
+   firstName,
+   lastName,
+   emailId,
+   password: passwordHash, 
+   age
+  });//getting data from api
+  console.log(user);
+
   await user.save(); //saving data to DB
   res.send("added user successfully");
 }
