@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const validator = require("validator");
+
+const jwt = require('jsonwebtoken');
+
+const bcrypt = require('bcrypt');
+
 //IT IS JUST LIKE OBJECTS IN CLASS, WE R DEFEING THE CLASS AND WE WILL CREATE ITS OBJECT/INSTANCE OF OBJECT
 
 const userSchema = new mongoose.Schema( {
@@ -66,7 +71,41 @@ const userSchema = new mongoose.Schema( {
 },
 {
     timestamps: true
-})
+});
+
+ //DON'T USE ARROW FUNCTION HERE 
+userSchema.methods.getJWT = async function () {
+
+    const user = this;
+  
+    const token = await jwt.sign({_id: user._id}, "DEV@TINDER$731",{expiresIn : '1d'});
+
+    // console.log("in user schema token");
+
+    if(!token)
+    {
+        console.log("token not found (in userSchema)");
+    }
+
+    return token;
+};
+
+
+
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
+
+     const user = this;
+     const hashedPassword = user.password;
+     const isValidPassword = await bcrypt.compare(passwordInputByUser,hashedPassword);
+     
+    //  console.log("in user schema validate password");
+     
+
+     return isValidPassword;
+
+}
+
+
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

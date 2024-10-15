@@ -48,6 +48,7 @@
     const userAuth2 = async (req, res, next) => 
     {
         try{
+            //get token from req
             const {token} = req.cookies; 
 
             if(!token)
@@ -55,9 +56,11 @@
                 throw new Error("token not found!!");
             }
           
+            //verify token
             const decodeData = jwt.verify( token , "DEV@TINDER$731");
             const{_id }=  decodeData;
-   
+
+             //find user by id
             const user = await User.findById({_id});
 
             // console.log(User);

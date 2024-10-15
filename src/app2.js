@@ -83,15 +83,28 @@ app.get( "/login", async (req, res) => {
       {
         throw new Error("User not present");
       }
+      // ------------------------------------------------
              //pass is valid or not (comparing..)
-      const validPassword = await bcrypt.compare(password, user.password);
+      // const validPassword = await bcrypt.compare(password, user.password);
+
+      const validPassword = await user.validatePassword(password);
+      //OFF-LOAD TO USER-SCHEMA
+
+
+      // ------------------------------------------------
+
       
       if(validPassword)
       {
+        // ---------------------------------------
         //create jwt cookie by encrypting id into token with 
         //secret key "DEV@TINDER$731"
-          const token = await jwt.sign({_id:user._id},"DEV@TINDER$731", {expiresIn: "1d"})
-          console.log("jwt token = ",token);
+          // const token = await jwt.sign({_id:user._id},"DEV@TINDER$731", {expiresIn: "1d"})
+          // console.log("jwt token = ",token);
+
+          const token = await user.getJWT(); //OFF-LOAD TO USER-SCHEMA
+        //------------------------------------------------
+
            
           // ADD THE JWT TOKEN TO COOKIE TO SAVE AT BROWSER
           res.cookie("token", token);
