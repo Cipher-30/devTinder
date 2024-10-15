@@ -1,3 +1,8 @@
+ 
+ const jwt = require("jsonwebtoken");
+ const User = require("../src/modals/user")
+ 
+ 
  //HERE WE ARE JUST DEFINING THE CALLBACK FUNCTION AND EXPORTING IT FOR THE USE IN (MIDDLEWARE OR ROUTE HANDLER)
  
  const adminAuth = (req, res, next) => 
@@ -35,9 +40,58 @@
         }
     };
 
+
+    // --------------------------------------------------------------
+    //************** USER AUTH FOR APP2******************** 
+
+
+    const userAuth2 = async (req, res, next) => 
+    {
+        try{
+            const {token} = req.cookies; 
+
+            if(!token)
+            {
+                throw new Error("token not found!!");
+            }
+          
+            const decodeData = jwt.verify( token , "DEV@TINDER$731");
+            const{_id }=  decodeData;
+   
+            const user = await User.findById({_id});
+
+            // console.log(User);
+            
+   
+            if(!user)
+            {
+               throw new Error("USER NOT FOUND IN THE DB");
+            }
+
+            req.user = user; // assign/attach user to request call
+            
+            next(); 
+        }
+        catch(err)
+        {
+            throw new Error("ERROR:" + err.message);
+        }
+
+
+
+
+
+
+          
+    }
+
+
+    
+
     module.exports = {
         adminAuth,
         userAuth,
+        userAuth2,
 
     };
 

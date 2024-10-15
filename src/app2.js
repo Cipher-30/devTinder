@@ -6,10 +6,12 @@ const connectDb = require("../config/database")
 const User = require("../src/modals/user")
 
 const {validateSignUpData} = require("./utils/validate")
-
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+
+//DONT FROGET TO EXTRACT/DESTRUCTURE DURING IMPORTING
+const {userAuth2} = require('../middleware/auth')
 
 
 const app = express();
@@ -22,20 +24,25 @@ app.use(cookieParser());
 
 
 
-app.get("/profile", async (req,res) => 
+app.get("/profile" ,userAuth2, async (req,res) => 
 {
+
+  //-----------------BEFORE USER-AUTH WAS THERE-----------------
   //getting the cookie from the req send
-  const cookie = req.cookies;
-  const {token} = cookie; //extract token
+//   const cookie = req.cookies;
+//   const {token} = cookie; //extract token
 
   //verify token with secret key ans get id from it
-  const decodeData = jwt.verify(token,"DEV@TINDER$731")
-  const {_id} = decodeData;// ectract id
+//   const decodeData = jwt.verify(token,"DEV@TINDER$731");
+//   const {_id} = decodeData;// extract id
    
- //find user from id
-  const user = await User.findById({_id});
+    //find user from id
+//   const user = await User.findById({_id});
+  //------------------------------------------------------
 
-
+try{
+  
+  const user = req.user ;
   if(!user)
   {
     throw new Error("user not found")
@@ -43,8 +50,13 @@ app.get("/profile", async (req,res) =>
   else{
     console.log("user deatails",user);
      //giving profile
-    res.send("here is your profile !!");
-  }
+    res.send(`${user.firstName}'s profile send successfully `);
+  }  
+}
+catch(err)
+{
+  throw new Error("something went wrong (during get/profile)");
+}
   
  
   
@@ -54,6 +66,8 @@ app.get("/profile", async (req,res) =>
 // ---------------------------------------------------------------
 // ******** LOG IN USER ********
 // ******** with HASED PASSWORD********
+// ******** CREATING JWT TOKEN with  EXPIRING DATE********
+
 
 
 
@@ -76,9 +90,10 @@ app.get( "/login", async (req, res) => {
       {
         //create jwt cookie by encrypting id into token with 
         //secret key "DEV@TINDER$731"
-          const token = await jwt.sign({_id:user._id},"DEV@TINDER$731")
-          console.log(token);
+          const token = await jwt.sign({_id:user._id},"DEV@TINDER$731", {expiresIn: "1d"})
+          console.log("jwt token = ",token);
            
+          // ADD THE JWT TOKEN TO COOKIE TO SAVE AT BROWSER
           res.cookie("token", token);
 
 
@@ -276,6 +291,7 @@ try{
 
   
   const {firstName, lastName, emailId, password, age} = req.body;
+
   const passwordHash = await bcrypt.hash(password,10);
 
   const user = new User({
