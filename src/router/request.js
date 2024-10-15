@@ -6,7 +6,32 @@ const { userAuth2 } = require("../../middleware/auth");
 
 const {validateEditProfileData} = require("../../middleware/auth");
 
+const bcrypt = require("bcrypt");
 
+
+requestRouter.patch("/profile/password",userAuth2, async(req,res) => {
+    const user = req.user;
+    const password = req.body.password;
+
+    const newpassword = await bcrypt.hash(password, 10);
+
+    user.password = newpassword;
+
+    // const oldPassword= req.user.password;
+    // console.log("oldpassword " ,oldPassword);
+    // console.log("newpassword " ,newPassword);
+
+    await user.save();
+
+    res.send("got the password");
+    
+})
+
+
+
+
+
+// ****************** EDIT PROFILE ************
 
 requestRouter.patch("/profile/edit", userAuth2, async (req, res) => {
  try{
@@ -39,7 +64,7 @@ requestRouter.patch("/profile/edit", userAuth2, async (req, res) => {
 
 
 
-//LOG-OUT REQUEST 
+// ****************** LOG-OUT REQUEST  ************
 
 requestRouter.post("/logout", (req, res) => {
 
@@ -53,6 +78,7 @@ requestRouter.post("/logout", (req, res) => {
 
 
 
+// ****************** PROFILE VIEW  ************
 
 requestRouter.get("/profile/view", userAuth2, async (req, res) => {
 
