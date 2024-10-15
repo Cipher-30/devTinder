@@ -78,14 +78,7 @@
         catch(err)
         {
             throw new Error("ERROR:" + err.message);
-        }
-
-
-
-
-
-
-          
+        }  
     }
 
 
