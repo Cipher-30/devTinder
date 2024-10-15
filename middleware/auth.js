@@ -80,14 +80,28 @@
             throw new Error("ERROR:" + err.message);
         }  
     }
+// -------------------------------------------------------
 
+
+const validateEditProfileData = async (req) => {
+  
+    const ALLOWED_UPDATES = ["firstName", "lastName", "age", "about", "skills"];
+
+    const isEditAllowed = Object.keys(req.body).forEach( (field) => { return ALLOWED_UPDATES.includes(field); })
+
+    return isEditAllowed;
+
+}
 
     
 
     module.exports = {
+
         adminAuth,
         userAuth,
         userAuth2,
+        validateEditProfileData,
+
 
     };
 

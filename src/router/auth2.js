@@ -15,7 +15,7 @@ const {validateSignUpData} = require("../utils/validate")
 // ******** with HASED PASSWORD********
 // ******** CREATING JWT TOKEN with  EXPIRING DATE********
 
-authRouter.get( "/login", async (req, res) => {
+authRouter.post( "/login", async (req, res) => {
 
     //gets the email and pass from postman  
      const {emailId, password} = req.body;
