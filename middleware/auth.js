@@ -101,8 +101,9 @@ const validateEditProfileData = async (req) => {
         userAuth,
         userAuth2,
         validateEditProfileData,
-
+ 
 
     };
 
 
+ 

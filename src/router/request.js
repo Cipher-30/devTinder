@@ -8,6 +8,86 @@ const {validateEditProfileData} = require("../../middleware/auth");
 
 const bcrypt = require("bcrypt");
 
+const ConnectionRequest = require("../modals/connectionRequest");
+
+const User = require("../modals/user")
+
+
+
+
+requestRouter.post( "/request/send/:status/:toUserId",userAuth2,
+ async (req, res) => {
+    try{
+        const fromUser = req.user._id;
+        const toUser = req.params.toUserId;
+        const status = req.params.status;
+
+        const allowedStatus = ["interested", "ignored"]
+        isStatusValid = allowedStatus.includes(status);
+
+        //cannot contain other then allowedStatus
+        if(!isStatusValid)
+        {
+          return res.status(400).json({message:"not a valid status"});
+        };
+
+        const toUserExist = await User.findById({_id: toUser});
+        console.log("toUserExist = ",toUserExist);
+        
+        if(!toUserExist)
+        {
+       return res.status(400).json({message:"toUser not exixt"});
+        }
+         
+        //or condition to find document from db
+        const connectionExist = await ConnectionRequest.findOne( {
+            $or: [
+            //already send a request to person
+                {fromUserId : fromUser, toUserId: toUser },
+             //person has already send you a request
+                {fromUserId: toUser, toUserId: fromUser}
+            ]
+         }); 
+ 
+         console.log("connectionExist",connectionExist); 
+         
+
+         if(connectionExist) 
+         { 
+           return  res.status(400).json({message:"user already exist"});
+         }
+
+ 
+        
+        
+        //making obj instance of ConnectionRequest
+        const connectionRequest = new ConnectionRequest({
+          fromUserId: fromUser,
+          toUserId: toUser,
+          status
+        })
+           //save to db
+        const data = await connectionRequest.save();
+        //send respose back 
+         res.json({
+          message: "Connection Request send successfully",
+          data
+         });
+    }
+    catch(err)
+    {
+        res.status(400).send("ERR:"+ err.message);
+    }
+
+    }
+)
+
+
+
+
+
+
+// ****************** EDIT PASSWORD ************
 
 requestRouter.patch("/profile/password",userAuth2, async(req,res) => {
     const user = req.user;
