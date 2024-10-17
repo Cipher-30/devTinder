@@ -15,6 +15,59 @@ const User = require("../modals/user")
 
 
 
+requestRouter.post("/request/review/:status/:requestId", userAuth2, async (req, res) => {
+    try{
+        const loggedInUser = req.user;
+    const allowedStatus = ["accepted", "rejected"];
+    const{status, requestId} = req.params;
+
+
+    //validate status
+    if(!allowedStatus.includes(status))
+    {
+        return  res.status(400).json({message:"status not valid"});
+    }
+
+    const connectionRequest = await ConnectionRequest.findOne({
+        _id: requestId,
+        toUserId: loggedInUser._id,
+        status: "interested",
+    })
+
+    if(!connectionRequest)
+    {
+        return res
+        .status(400)
+        .json({message: "not found any user (connection request)"})
+    }
+
+    connectionRequest.status = status;
+    const data = await connectionRequest.save();
+
+    res
+    .json({message:"sonnection request" + status,data});
+    }
+    catch(err)
+    {
+        res
+        .status(400)
+        .json({message:"Err"+ err.message,})
+    }
+
+
+})
+
+
+
+
+
+
+
+// ---------------------------------------------------------------------
+
+
+
+
 requestRouter.post( "/request/send/:status/:toUserId",userAuth2,
  async (req, res) => {
     try{
@@ -211,6 +264,6 @@ requestRouter.get("/sendConnectionRequest", userAuth2, (req, res) => {
 
 
 
-
+ 
 
 module.exports = requestRouter;
