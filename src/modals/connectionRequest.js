@@ -23,9 +23,12 @@ const connectionRequestSchema = new mongoose.Schema( {
     timestamps:true
 });
 
+
 //indexing the field to make the finding faster for mongoDB
  connectionRequestSchema.index({fromUserId:1, toUserId:1});
  // compound Indexing , ADDING UNIQUE : TRUE IS ALSO A INDEXING
+
+
 
 //WILL RUN BEFORE SAVING INTO DB
 connectionRequestSchema.pre("save", function (next){ // no arrow function here
@@ -36,6 +39,7 @@ connectionRequestSchema.pre("save", function (next){ // no arrow function here
     }
     next();
 })
+
 
 
 const connectionRequestModel = new mongoose.model("ConnectionRequest", connectionRequestSchema); 

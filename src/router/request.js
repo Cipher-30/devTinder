@@ -14,13 +14,12 @@ const User = require("../modals/user")
 
 
 
-
+// accepting or rejecting user request
 requestRouter.post("/request/review/:status/:requestId", userAuth2, async (req, res) => {
     try{
         const loggedInUser = req.user;
     const allowedStatus = ["accepted", "rejected"];
     const{status, requestId} = req.params;
-
 
     //validate status
     if(!allowedStatus.includes(status))
@@ -67,7 +66,7 @@ requestRouter.post("/request/review/:status/:requestId", userAuth2, async (req, 
 
 
 
-
+//SENDING OR IGNORING THE USER
 requestRouter.post( "/request/send/:status/:toUserId",userAuth2,
  async (req, res) => {
     try{
@@ -82,7 +81,7 @@ requestRouter.post( "/request/send/:status/:toUserId",userAuth2,
         if(!isStatusValid)
         {
           return res.status(400).json({message:"not a valid status"});
-        };
+        }; 
 
         const toUserExist = await User.findById({_id: toUser});
         console.log("toUserExist = ",toUserExist);
@@ -237,7 +236,11 @@ requestRouter.get("/profile/view", userAuth2, async (req, res) => {
         else {
             console.log("user deatails", user);
             //giving profile
-            res.send(`${user.firstName}'s profile send successfully `);
+            res
+            .json({
+                message:`${user.firstName}'s profile send successfully `,
+                user
+            });
         }
     }
     catch (err) {
