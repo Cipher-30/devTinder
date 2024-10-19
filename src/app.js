@@ -2,6 +2,10 @@ const express = require('express');
 
 const app = express();
 
+//middleware -> for parsing the json to js-obj.
+// app.use(express.json()); //to read from res.body also
+
+
 
 // ------------------------------------------------------
     //  ************ HANDELING ERROR ***********
@@ -12,9 +16,8 @@ const app = express();
         //THIS IS THE BEST WAY TO HANDLE ERROR 
         //BY USING TRY AND CATCH 
         try{
-            
-            throw new Error("jfskfj");
             res.send("user data send")
+            // throw new Error("jfskfj");
         }
         catch(err)
         {
@@ -176,13 +179,14 @@ const app = express();
 
 // to get the query param from "/user?userId=101"
 // to get the query param from "/user?userId=101&password=1234"
-// app.get( "/user", (req, res) => {
+app.get( "/user", (req, res) => {
 
-//        //will give the "query" from url (userid and pass) to auth
-//        console.log(req.query);
+       //will give the "query" from url (userid and pass) to auth
+       console.log(req.query);
+       //params are used in dynamic URL
        
-//     res.send({firstname:"amit", lastname:"kumar"});
-// });
+    res.send({firstname:"amit", lastname:"kumar"});
+});
 
 
 // ----------------------------------------------------------
@@ -256,6 +260,6 @@ app.use( "/hello" , (req, res) => {
 // --------------------------------------------------
 
 
-// app.listen(3000, () => {
-//     console.log("listening on 3000!!")
-// });
+app.listen(3000, () => {
+    console.log("listening on 3000!!");
+});
