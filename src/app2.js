@@ -388,7 +388,7 @@ app.get("/allUser", async (req, res) => {
 
 //  app.post("/signup" , async (req, res) => {
 
-//   //CREATING OBJ TO SAVE INTO USER INSTANCE/MODAL
+  //CREATING OBJ TO SAVE INTO USER INSTANCE/MODAL
 //   const userObj = {
 //     firstName: "virat",
 //     lastName : "kholi", 
@@ -398,11 +398,11 @@ app.get("/allUser", async (req, res) => {
 
 //   };
 
-//   //creating instance of User model/object
+  //creating instance of User model/object
 //   const user = new User(userObj);
 
 
-//   //--------SAVES THE USER TO DB---------------
+  //--------SAVES THE USER TO DB---------------
 //  try{
 //       await user.save(); // returns promise
 //       res.send("successfully created user virat!!!")
@@ -410,32 +410,32 @@ app.get("/allUser", async (req, res) => {
 //     catch(err)
 //     {
 //       res.status(500).send("Error saving the user" + err.message)
-//     }
-// // ---------------------------------------------------------
+    // }
+// ---------------------------------------------------------
 
-// //FAST/EASY TO CREATE OBJ TO SAVE INTO USER INSTANCE/MODAL
-// //  (DIRECTLY)
+//FAST/EASY TO CREATE OBJ TO SAVE INTO USER INSTANCE/MODAL
+//  (DIRECTLY)
 
-//   //  const user = new User({
-//   //   firstName: "amit",
-//   //   lastName : "kumar", 
-//   //   emailId: "ak@gmail.com",
-//   //   password:"test@123",
-//   //   gender: "male"
-//   //  });
+  //  const user = new User({
+  //   firstName: "amit",
+  //   lastName : "kumar", 
+  //   emailId: "ak@gmail.com",
+  //   password:"test@123",
+  //   gender: "male"
+  //  });
 
-//   //--------SAVES THE USER TO DB---------------
+  //--------SAVES THE USER TO DB---------------
 
-//     // try{
-//     //   await user.save(); // returns promise
-//     //   res.send("successfully created user!!!")
-//     // }
-//     // catch(err)
-//     // {
-//     //   res.status(500).send("Error saving the user")
-//     // }
+    // try{
+    //   await user.save(); // returns promise
+    //   res.send("successfully created user!!!")
+    // }
+    // catch(err)
+    // {
+    //   res.status(500).send("Error saving the user")
+    // }
 
-//   //-----------------------------------------------------
+  //-----------------------------------------------------
 //  });
 
 
@@ -466,15 +466,12 @@ connectDb()
   .then(() => {
     console.log("database connection established..");
 
-
     app.listen(4000, () => {
       console.log("running app2 on port 4000!");
     })
-
   })
   .catch(() => {
     console.error("cannot connect to database");
-
   });
 
 
